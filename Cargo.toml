@@ -3,4 +3,16 @@ name = "rust_sst_ion_template"
 version = "0.1.0"
 edition = "2021"
 
+[profile.release]
+debug = 0
+incremental = false
+panic = "abort"
+opt-level = 3       # 0-3
+strip = 'symbols'   # strip symbols from binary
+lto = true          # enable link time optimization
+
 [dependencies]
+
+[[bin]]
+name = "api"
+path = "src/bin/handlers/api.rs"
