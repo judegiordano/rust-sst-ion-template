@@ -56,7 +56,7 @@ jobs:
         with:
           repo: cargo-lambda/cargo-lambda
           platform: linux
-          arch: aarch64 # | x86_64
+          arch: x86_64 # | aarch64
 
       - name: pnpm install
         run: pnpm install --frozen-lockfile
