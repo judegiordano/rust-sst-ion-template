@@ -64,7 +64,7 @@ jobs:
       - name: build lambdas
         run: |
           set -euxo pipefail
-          cargo lambda build --release --arm64
+          cargo lambda build --release
 
       # - name: pnpm deploy
       #   run: |
