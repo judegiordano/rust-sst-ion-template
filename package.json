@@ -2,12 +2,15 @@
   "name": "rust_sst_ion_template",
   "version": "1.0.0",
   "description": "",
-  "scripts": {
-  },
+  "scripts": {},
   "author": "jude giordano",
   "license": "ISC",
   "devDependencies": {
+    "@types/aws-lambda": "8.10.143",
     "sst": "^3.0.68",
     "sst-linux-x64": "^3.0.68"
+  },
+  "dependencies": {
+    "sst": "3.0.68"
   }
 }

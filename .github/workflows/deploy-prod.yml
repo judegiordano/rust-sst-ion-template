@@ -16,6 +16,7 @@ jobs:
     environment: Production
     steps:
       - uses: actions/checkout@v3
+      - uses: pguyot/arm-runner-action@v2
 
       - name: use Node.js
         uses: actions/setup-node@v3
@@ -66,10 +67,15 @@ jobs:
           set -euxo pipefail
           cargo lambda build --release
 
-      # - name: pnpm deploy
-      #   run: |
-      #     set -euxo pipefail
-      #     pnpm sst deploy --stage prod
+      - name: sst install providers
+        run: |
+          set -euxo pipefail
+          pnpm sst install
+
+      - name: sst deploy
+        run: |
+          set -euxo pipefail
+          pnpm sst deploy --stage prod
 
     env:
       STAGE: prod
