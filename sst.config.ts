@@ -21,12 +21,12 @@ export default $config({
     const api = new sst.aws.Function("api", {
       handler: "bootstrap",
       architecture: "arm64",
-      timeout: "60 seconds",
       bundle: "./target/lambda/api",
       runtime: 'provided.al2023',
       url: true,
       environment: {
-        STAGE: stage
+        STAGE: stage,
+        MONGO_URI: process.env.MONGO_URI
       }
     });
     return {
