@@ -15,26 +15,26 @@ jobs:
     runs-on: ubuntu-latest
     environment: Production
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: pguyot/arm-runner-action@v2
 
       - name: use Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: latest
 
       - name: use pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v4
         with:
-          version: 8
+          version: latest
 
       - name: get pnpm store directory
         shell: bash
         run: |
           echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
 
-      - uses: actions/cache@v3
-        name: setup pnpm cache
+      - name: setup pnpm cache
+        uses: actions/cache@v3
         with:
           path: ${{ env.STORE_PATH }}
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
@@ -50,7 +50,7 @@ jobs:
       - name: use Zig
         uses: korandoru/setup-zig@v1
         with:
-          zig-version: 0.13.0
+          zig-version: master
 
       - name: use Cargo Lambda
         uses: jaxxstorm/action-install-gh-release@v1.9.0
@@ -62,15 +62,15 @@ jobs:
       - name: pnpm install
         run: pnpm install --frozen-lockfile
 
-      - name: build lambdas
-        run: |
-          set -euxo pipefail
-          cargo lambda build --release --arm64
-
       - name: sst install providers
         run: |
           set -euxo pipefail
           pnpm sst install
+
+      - name: build lambdas
+        run: |
+          set -euxo pipefail
+          cargo lambda build --release --arm64
 
       - name: sst deploy
         run: |
