@@ -1,6 +1,8 @@
 use serde::{Deserialize, Serialize};
 use tracing::Level;
 
+use crate::errors::AppError;
+
 #[derive(Debug, Deserialize, Serialize)]
 pub enum Stage {
     Local,
@@ -24,12 +26,12 @@ impl Env {
         }
     }
 
-    fn _get_required_string(key: &str) -> String {
+    fn _get_required_string(key: &str) -> Result<String, AppError> {
         match std::env::var(key.trim().to_uppercase()) {
-            Ok(value) => value,
+            Ok(value) => Ok(value),
             Err(err) => {
                 eprintln!("{key} not found: {err}");
-                std::process::exit(1);
+                return Err(AppError::env_error(err));
             }
         }
     }
@@ -48,28 +50,28 @@ impl Env {
         }
     }
 
-    pub fn stage() -> Stage {
-        match Self::_get_required_string("STAGE").to_uppercase().as_str() {
-            "LOCAL" => Stage::Local,
-            "PROD" => Stage::Prod,
-            "TEST" => Stage::Test,
-            other => Stage::Other(other.to_string()),
+    pub fn stage() -> Result<Stage, AppError> {
+        match Self::_get_required_string("STAGE")?.to_uppercase().as_str() {
+            "LOCAL" => Ok(Stage::Local),
+            "PROD" => Ok(Stage::Prod),
+            "TEST" => Ok(Stage::Test),
+            other => Ok(Stage::Other(other.to_string())),
         }
     }
 
-    pub fn mongo_uri() -> String {
+    pub fn mongo_uri() -> Result<String, AppError> {
         Self::_get_required_string("MONGO_URI")
     }
 
-    pub fn load() -> Self {
+    pub fn load() -> Result<Self, AppError> {
         if cfg!(debug_assertions) {
             use dotenv::dotenv;
             dotenv().ok();
         }
-        Self {
-            stage: Self::stage(),
+        Ok(Self {
+            stage: Self::stage()?,
             log_level: Self::log_level(),
-            mongo_uri: Self::mongo_uri(),
-        }
+            mongo_uri: Self::mongo_uri()?,
+        })
     }
 }
