@@ -1,14 +1,9 @@
 use lambda_http::Error;
-use rust_sst_ion_template::controllers::routes;
-use tracing::Level;
-use tracing_subscriber::FmtSubscriber;
+use rust_sst_ion_template::{controllers::routes, logger};
 
 #[tokio::main]
 pub async fn main() -> Result<(), Error> {
-    let subscriber = FmtSubscriber::builder()
-        .with_max_level(Level::INFO)
-        .finish();
-    tracing::subscriber::set_global_default(subscriber)?;
+    logger::init()?;
     let app = axum::Router::new().nest("/api", routes());
     // bind to localhost when running cargo dev
     if cfg!(debug_assertions) {

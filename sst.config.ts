@@ -21,7 +21,7 @@ export default $config({
     const api = new sst.aws.Function("api", {
       handler: "bootstrap",
       architecture: "arm64",
-      bundle: "./target/lambda/api",
+      bundle: "target/lambda/api",
       runtime: 'provided.al2023',
       url: true,
       environment: {
