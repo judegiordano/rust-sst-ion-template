@@ -23,7 +23,9 @@ export default $config({
       architecture: "arm64",
       bundle: "target/lambda/api",
       runtime: 'provided.al2023',
-      url: true,
+      timeout: "10 minutes",
+      memory: "1024 MB",
+      url: { cors: true },
       environment: {
         STAGE: stage,
         MONGO_URI: process.env.MONGO_URI
