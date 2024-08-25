@@ -1,0 +1,12 @@
+[template]
+ignore = [
+	".git",
+	"cargo-generate.toml",
+	".sst",
+	"node_modules",
+	"target",
+	".env",
+]
+
+[placeholders]
+aws_region = { prompt = "Enter the target AWS region", default = "us-east-1", type = "string" }

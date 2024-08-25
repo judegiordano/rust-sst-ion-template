@@ -4,13 +4,11 @@
 export default $config({
   app(input) {
     return {
-      name: 'rust-sst-ion-template',
+      name: '{{project-name}}',
       removal: 'remove',
       home: 'aws',
       providers: {
-        aws: {
-          region: 'us-east-1'
-        }
+        aws: { region: '{{aws_region}}' }
       },
       stage: input?.stage
     };
