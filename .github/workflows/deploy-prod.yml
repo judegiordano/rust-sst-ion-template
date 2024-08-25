@@ -59,6 +59,9 @@ jobs:
           platform: linux
           arch: aarch64 # | x86_64
 
+      - name: cargo lint
+        run: cargo lint
+
       - name: pnpm install
         run: pnpm install --frozen-lockfile
 

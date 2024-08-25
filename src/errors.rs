@@ -20,6 +20,7 @@ pub enum AppError {
     NotFound(String),
 }
 
+#[allow(clippy::needless_pass_by_value)]
 impl AppError {
     pub fn env_error(error: impl ToString) -> Self {
         Self::EnvError(error.to_string())

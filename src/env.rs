@@ -3,7 +3,7 @@ use tracing::Level;
 
 use crate::errors::AppError;
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub enum Stage {
     Local,
     Test,
@@ -11,7 +11,7 @@ pub enum Stage {
     Other(String),
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Env {
     pub stage: Stage,
     pub log_level: Level,
@@ -20,10 +20,7 @@ pub struct Env {
 
 impl Env {
     fn _get_optional_string(key: &str) -> Option<String> {
-        match std::env::var(key.trim().to_uppercase()) {
-            Ok(value) => Some(value),
-            Err(_) => None,
-        }
+        std::env::var(key.trim().to_uppercase()).ok()
     }
 
     fn _get_required_string(key: &str) -> Result<String, AppError> {
@@ -31,23 +28,21 @@ impl Env {
             Ok(value) => Ok(value),
             Err(err) => {
                 eprintln!("{key} not found: {err}");
-                return Err(AppError::env_error(err));
+                Err(AppError::env_error(err))
             }
         }
     }
 
     pub fn log_level() -> Level {
-        match Self::_get_optional_string("LOG_LEVEL") {
-            Some(value) => match value.to_uppercase().as_str() {
+        Self::_get_optional_string("LOG_LEVEL").map_or(Level::ERROR, |value| {
+            match value.to_uppercase().as_str() {
                 "DEBUG" => Level::DEBUG,
                 "INFO" => Level::INFO,
-                "ERROR" => Level::ERROR,
                 "WARN" => Level::WARN,
                 "TRACE" => Level::TRACE,
                 _ => Level::ERROR,
-            },
-            None => Level::ERROR,
-        }
+            }
+        })
     }
 
     pub fn stage() -> Result<Stage, AppError> {
