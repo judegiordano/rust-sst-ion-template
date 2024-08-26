@@ -1,3 +1,4 @@
+pub mod aws;
 pub mod controllers;
 pub mod env;
 pub mod errors;

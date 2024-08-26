@@ -6,7 +6,40 @@ ignore = [
 	"node_modules",
 	"target",
 	".env",
+	"Cargo.lock",
+	"pnpm-lock.yaml",
+]
+exclude = [
+	".git",
+	"cargo-generate.toml",
+	".sst",
+	"node_modules",
+	"target",
+	".env",
+	"Cargo.lock",
+	"pnpm-lock.yaml",
+	"*.rhai",
 ]
 
 [placeholders]
-aws_region = { prompt = "Enter the target AWS region", default = "us-east-1", type = "string" }
+aws_region = { prompt = "Enter the target AWS region", choices = [
+	"us-east-1",
+	"us-east-2",
+	"us-west-1",
+	"us-west-2",
+], default = "us-east-1", type = "string" }
+s3_bucket = { prompt = "Scaffold S3 Bucket?", default = false, type = "bool" }
+sqs_queue = { prompt = "Scaffold SQS FIFO Queue?", default = false, type = "bool" }
+
+[conditional.'s3_bucket'.placeholders.s3_bucket_name]
+type = "string"
+prompt = "Enter bucket name..."
+default = "my-bucket"
+
+[conditional.'sqs_queue'.placeholders.sqs_queue_name]
+type = "string"
+prompt = "Enter sqs name..."
+default = "my-queue"
+
+[hooks]
+pre = ["pre-script.rhai"]

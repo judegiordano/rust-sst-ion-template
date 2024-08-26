@@ -1,5 +1,5 @@
-use lambda_http::Error;
 use {{crate_name}}::{controllers::routes, logger};
+use lambda_http::Error;
 
 #[tokio::main]
 pub async fn main() -> Result<(), Error> {
