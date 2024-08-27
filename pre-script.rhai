@@ -7,6 +7,5 @@ if !scaffold_s3 {
 
 if !scaffold_sqs {
     file::delete("src/aws/sqs.rs");
-    file::delete("src/bin/handlers/queues/example-fifo.rs");
     file::delete("src/bin/handlers/queues");
 }

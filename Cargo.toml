@@ -37,6 +37,6 @@ path = "src/bin/handlers/api.rs"
 
 {% if sqs_queue %}
 [[bin]]
-name = "example-fifo"
-path = "src/bin/handlers/queues/example-fifo.rs"
+name = "{{sqs_queue_name}}-fifo"
+path = "src/bin/handlers/queues/{{sqs_queue_name}}-fifo.rs"
 {% endif %}

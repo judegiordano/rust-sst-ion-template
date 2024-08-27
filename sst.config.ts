@@ -57,7 +57,7 @@ export default $config({
     });
     queue.subscribe({
       handler: 'bootstrap',
-      bundle: 'target/lambda/example-fifo',
+      bundle: 'target/lambda/{{sqs_queue_name}}-fifo',
     })
     {% endif %}
     return {
