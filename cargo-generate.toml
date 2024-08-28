@@ -27,9 +27,38 @@ aws_region = { prompt = "Enter the target AWS region", choices = [
 	"us-east-2",
 	"us-west-1",
 	"us-west-2",
+	"af-south-1",
+	"ap-east-1",
+	"ap-south-2",
+	"ap-southeast-3",
+	"ap-southeast-5",
+	"ap-southeast-4",
+	"ap-south-1",
+	"ap-northeast-3",
+	"ap-northeast-2",
+	"ap-southeast-1",
+	"ap-southeast-2",
+	"ap-northeast-1",
+	"ca-central-1",
+	"ca-west-1",
+	"cn-north-1",
+	"cn-northwest-1",
+	"eu-central-1",
+	"eu-west-1",
+	"eu-west-2",
+	"eu-south-1",
+	"eu-west-3",
+	"eu-south-2",
+	"eu-north-1",
+	"eu-central-2",
+	"il-central-1",
+	"me-south-1",
+	"me-central-1",
+	"sa-east-1",
 ], default = "us-east-1", type = "string" }
 s3_bucket = { prompt = "Scaffold S3 Bucket?", default = false, type = "bool" }
 sqs_queue = { prompt = "Scaffold SQS FIFO Queue?", default = false, type = "bool" }
+cron_job = { prompt = "Scaffold Cron Job?", default = false, type = "bool" }
 
 [conditional.'s3_bucket'.placeholders.s3_bucket_name]
 type = "string"
@@ -40,6 +69,11 @@ default = "my-bucket"
 type = "string"
 prompt = "Enter sqs name..."
 default = "my-queue"
+
+[conditional.'cron_job'.placeholders.cron_name]
+type = "string"
+prompt = "Enter cron name..."
+default = "my-cron"
 
 [hooks]
 pre = ["pre-script.rhai"]

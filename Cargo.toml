@@ -40,3 +40,9 @@ path = "src/bin/handlers/api.rs"
 name = "{{sqs_queue_name}}-fifo"
 path = "src/bin/handlers/queues/{{sqs_queue_name}}-fifo.rs"
 {% endif %}
+
+{% if cron_job %}
+[[bin]]
+name = "{{cron_name}}"
+path = "src/bin/handlers/crons/{{cron_name}}.rs"
+{% endif %}

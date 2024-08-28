@@ -21,8 +21,10 @@ pub struct Env {
     aws_access_key_id: String,
     #[allow(dead_code)]
     aws_secret_access_key: String,
-    {% if s3_bucket %}bucket_name: String,{% endif %}
-    {% if sqs_queue %}queue_url: String,{% endif %}
+    {% if s3_bucket %}#[allow(dead_code)]
+    bucket_name: String,{% endif %}
+    {% if sqs_queue %}[allow(dead_code)]
+    queue_url: String,{% endif %}
 }
 
 impl Env {
