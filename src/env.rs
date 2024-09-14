@@ -16,11 +16,6 @@ pub struct Env {
     pub stage: Stage,
     pub log_level: Level,
     pub mongo_uri: String,
-    pub aws_region: String,
-    #[allow(dead_code)]
-    aws_access_key_id: String,
-    #[allow(dead_code)]
-    aws_secret_access_key: String,
     {% if s3_bucket %}#[allow(dead_code)]
     bucket_name: String,{% endif %}
     {% if sqs_queue %}[allow(dead_code)]
@@ -76,9 +71,6 @@ impl Env {
             stage: Self::stage()?,
             log_level: Self::log_level(),
             mongo_uri: Self::mongo_uri()?,
-            aws_region: Self::_get_required_string("AWS_REGION")?,
-            aws_access_key_id: Self::_get_required_string("AWS_ACCESS_KEY_ID")?,
-            aws_secret_access_key: Self::_get_required_string("AWS_SECRET_ACCESS_KEY")?,
             {% if s3_bucket %}bucket_name: Self::_get_required_string("BUCKET_NAME")?,{% endif %}
             {% if sqs_queue %}queue_url: Self::_get_required_string("QUEUE_URL")?,{% endif %}
         })
