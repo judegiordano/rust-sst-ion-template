@@ -1,5 +1,4 @@
 use axum::{http::StatusCode, response::IntoResponse, Json};
-use meme_cache::{get, set};
 use mongoose::{doc, types::ListOptions, Model};
 
 use crate::{

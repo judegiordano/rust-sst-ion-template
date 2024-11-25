@@ -1,6 +1,8 @@
 
 /// <reference path='./.sst/platform/config.d.ts' />
 
+const domain = 'judethings.com'
+
 export default $config({
   app(input) {
     return {
@@ -65,9 +67,25 @@ export default $config({
       },
       link: [{% if s3_bucket %}bucket,{% endif %}{% if sqs_queue %}queue,{% endif %}]
     });
+
+    const router = new sst.aws.Router('router', {
+      invalidation: false,
+      routes: { '/*': api.url },
+      domain: {
+        name: `api.{{project-name}}.${domain}`,
+        redirects: [`www.api.{{project-name}}.${domain}`]
+      },
+      transform: {
+        cachePolicy: {
+          defaultTtl: 60
+        }
+      }
+    })
     
     return {
-      url: api.url,{% if s3_bucket %}bucket: bucket.name,{% endif %}{% if sqs_queue %}queue: queue.url,{% endif %}
+      api: api.url,
+      url: router.url,
+      {% if s3_bucket %}bucket: bucket.name,{% endif %}{% if sqs_queue %}queue: queue.url,{% endif %}
     }
   },
 });
