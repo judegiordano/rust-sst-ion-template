@@ -1,13 +1,20 @@
-use {{crate_name}}::{controllers::routes, logger};
 use lambda_http::Error;
+use {{crate_name}}::{
+    cache,
+    controllers::routes,
+    logger,
+    types::{AppState, ONE_MINUTE_IN_MS},
+};
 
 #[tokio::main]
 pub async fn main() -> Result<(), Error> {
     logger::init()?;
-    let app = axum::Router::new().nest("/api", routes());
-    // bind to localhost when running cargo dev
+    let state = AppState {
+        env_cache: cache::prepare(10_000, ONE_MINUTE_IN_MS),
+    };
+    let app = axum::Router::new().nest("/", routes()).with_state(state);
     if cfg!(debug_assertions) {
-        let listener = tokio::net::TcpListener::bind("127.0.0.1:3000").await?;
+        let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await?;
         tracing::info!("listening on {:?}", listener.local_addr()?);
         return Ok(axum::serve(listener, app).await?);
     }

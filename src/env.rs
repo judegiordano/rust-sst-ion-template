@@ -18,7 +18,7 @@ pub struct Env {
     pub mongo_uri: String,
     {% if s3_bucket %}#[allow(dead_code)]
     bucket_name: String,{% endif %}
-    {% if sqs_queue %}[allow(dead_code)]
+    {% if sqs_queue %}#[allow(dead_code)]
     queue_url: String,{% endif %}
 }
 

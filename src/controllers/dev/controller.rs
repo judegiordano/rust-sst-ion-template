@@ -1,36 +1,23 @@
-use axum::{http::StatusCode, response::IntoResponse, Json};
-use mongoose::{doc, types::ListOptions, Model};
+use axum::{extract::State, response::IntoResponse, Json};
+use chrono::Utc;
 
 use crate::{
     env::Env,
-    errors::AppError,
-    models::ping::{Ping, PingDto},
-    types::ApiResponse,
+    types::{ApiResponse, AppState, Ping},
 };
 
-const PING_LIST_CACHE_KEY: &str = "pings";
-
-pub async fn ping() -> ApiResponse {
-    if let Some(exists) = get::<Vec<PingDto>>(PING_LIST_CACHE_KEY).await {
-        return Ok(Json(exists).into_response());
+pub async fn ping(State(state): State<AppState>) -> ApiResponse {
+    if let Some(stage) = state.env_cache.get("stage").await {
+        return Ok(Json(stage).into_response());
     }
     let Env { stage, .. } = Env::load()?;
-    let new_ping = Ping {
+    let ping = Ping {
         stage,
-        ..Default::default()
+        last_updated: Utc::now().timestamp_millis(),
     };
-    new_ping.save().await.map_err(AppError::bad_request)?;
-    let pings = Ping::list(
-        doc! {},
-        ListOptions {
-            limit: 0,
-            sort: doc! { "created_at": -1 },
-            ..Default::default()
-        },
-    )
-    .await
-    .map_err(AppError::bad_request)?;
-    let ping_dtos = pings.iter().map(Ping::dto).collect::<Vec<_>>();
-    set(PING_LIST_CACHE_KEY, &ping_dtos, 10_000).await;
-    Ok((StatusCode::CREATED, Json(ping_dtos)).into_response())
+    state
+        .env_cache
+        .insert("stage".to_string(), ping.clone())
+        .await;
+    Ok(Json(ping).into_response())
 }
